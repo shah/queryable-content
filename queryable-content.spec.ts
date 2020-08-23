@@ -1,9 +1,9 @@
-import * as fs from "fs";
 import * as p from "@shah/ts-pipe";
-import mime from "whatwg-mimetype";
 import { Expect, Test, TestFixture, Timeout } from "alsatian";
-import { NewsArticle, WebPage } from "schema-dts"
-import * as qc from "./queryable-content"
+import * as fs from "fs";
+import { NewsArticle, WebPage } from "schema-dts";
+import mime from "whatwg-mimetype";
+import * as qc from "./queryable-content";
 
 @TestFixture("Uniform Resource Test Suite")
 export class TestSuite {
