@@ -1,0 +1,47 @@
+{
+    "name": "@shah/queryable-content",
+    "version": "0.5.0",
+    "description": "Queryable (usually HTML) content for content orchestration engines",
+    "main": "dist/queryable-content.js",
+    "types": "dist/queryable-content.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "prepublishOnly": "tsc --project tsconfig.json",
+        "build": "tsc --project tsconfig.json",
+        "test": "alsatian './**/*.spec.ts'"
+    },
+    "repository": {
+        "url": "git://github.com/shah/queryable-content.git"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    },
+    "keywords": [
+        "html",
+        "cheerio",
+        "queryable",
+        "content"
+    ],
+    "author": "Shahid N. Shah",
+    "license": "MIT",
+    "dependencies": {
+        "@shah/ts-pipe": "0.1.1",
+        "cheerio": "^1.0.0-rc.3",
+        "schema-dts": "^0.6.0",
+        "whatwg-mimetype": "^2.3.0"
+    },
+    "bugs": {
+        "url": "https://github.com/shah/queryable-content/issues"
+    },
+    "homepage": "https://github.com/shah/queryable-content",
+    "devDependencies": {
+        "@types/cheerio": "^0.22.21",
+        "@types/node": "^14.0.26",
+        "@types/whatwg-mimetype": "^2.1.0",
+        "alsatian": "^3.2.1",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.7"
+    }
+}
