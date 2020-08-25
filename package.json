@@ -1,6 +1,6 @@
 {
     "name": "@shah/queryable-content",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "description": "Queryable (usually HTML) content for content orchestration engines",
     "main": "dist/queryable-content.js",
     "types": "dist/queryable-content.d.ts",

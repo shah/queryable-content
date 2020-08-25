@@ -38,7 +38,7 @@ export class TestSuite {
         Expect(content).toBeDefined();
         Expect(qc.isQueryableHtmlContent(content)).toBe(true);
         if (qc.isQueryableHtmlContent(content)) {
-            const schemas = content.uptypedSchemas(true);
+            const schemas = content.untypedSchemas(true);
             Expect(schemas).toBeDefined();
             Expect(schemas?.length).toBe(2);
             if (schemas && schemas[0]) {
@@ -59,7 +59,7 @@ export class TestSuite {
         Expect(qc.isQueryableHtmlContent(content)).toBe(true);
         if (qc.isQueryableHtmlContent(content)) {
             let errorIndex: number = -1;
-            const schemas = content.uptypedSchemas(true, undefined, (ctx, index, elem, err) => { errorIndex = index });
+            const schemas = content.untypedSchemas(true, undefined, (ctx, index, elem, err) => { errorIndex = index });
             Expect(schemas).toBeDefined();
             Expect(schemas?.length).toBe(6);
             Expect(errorIndex).toBe(1);

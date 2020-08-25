@@ -83,7 +83,7 @@ export interface QueryableHtmlContent extends GovernedContent {
   readonly document: CheerioStatic;
   readonly anchors: (retain?: AnchorFilter) => HtmlAnchor[];
   readonly images: (retain?: ImageFilter) => HtmlImage[];
-  readonly uptypedSchemas: (unwrapGraph: boolean, retain?: UntypedObjectFilter, eh?: SchemaParseErrorHandler) => UntypedObject[] | undefined;
+  readonly untypedSchemas: (unwrapGraph: boolean, retain?: UntypedObjectFilter, eh?: SchemaParseErrorHandler) => UntypedObject[] | undefined;
   readonly pageIcons: () => PageIcon[];
   readonly meta: (consumer?: HtmlMetaConsumer) => HtmlMeta;
 }
@@ -290,7 +290,7 @@ export class EnrichQueryableHtmlContent implements ContentTransformer {
       images: (retain?: ImageFilter): HtmlImage[] => {
         return self.images(document, retain);
       },
-      uptypedSchemas: (unwrapGraph: boolean, retain?: UntypedObjectFilter, eh?: SchemaParseErrorHandler): UntypedObject[] | undefined => {
+      untypedSchemas: (unwrapGraph: boolean, retain?: UntypedObjectFilter, eh?: SchemaParseErrorHandler): UntypedObject[] | undefined => {
         return self.untypedSchemas(ctx, document, unwrapGraph, retain, eh);
       },
       pageIcons: (): PageIcon[] => {
