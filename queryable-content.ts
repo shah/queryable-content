@@ -65,6 +65,10 @@ export interface UntypedObjectFilter {
   (retain: UntypedObject): boolean;
 }
 
+export interface SchemaParseErrorHandler {
+  (ctx: GovernedContentContext, index: number, elem: CheerioElement, err: Error): void;
+}
+
 export interface CuratableContent extends GovernedContent {
   readonly title: ContentTitle;
   readonly socialGraph: SocialGraph;
@@ -79,7 +83,7 @@ export interface QueryableHtmlContent extends GovernedContent {
   readonly document: CheerioStatic;
   readonly anchors: (retain?: AnchorFilter) => HtmlAnchor[];
   readonly images: (retain?: ImageFilter) => HtmlImage[];
-  readonly uptypedSchemas: (unwrapGraph: boolean, retain?: UntypedObjectFilter) => UntypedObject[] | undefined;
+  readonly uptypedSchemas: (unwrapGraph: boolean, retain?: UntypedObjectFilter, eh?: SchemaParseErrorHandler) => UntypedObject[] | undefined;
   readonly pageIcons: () => PageIcon[];
   readonly meta: (consumer?: HtmlMetaConsumer) => HtmlMeta;
 }
@@ -207,28 +211,32 @@ export class EnrichQueryableHtmlContent implements ContentTransformer {
     return result;
   }
 
-  untypedSchemas(document: CheerioStatic, unwrapGraph: boolean, retain?: UntypedObjectFilter): UntypedObject[] | undefined {
+  untypedSchemas(ctx: GovernedContentContext, document: CheerioStatic, unwrapGraph: boolean, retain?: UntypedObjectFilter, eh?: SchemaParseErrorHandler): UntypedObject[] | undefined {
     const result: UntypedObject[] = [];
     document('script[type="application/ld+json"]').each((index, scriptElem): void => {
       const script = scriptElem.children[0].data;
       if (script) {
-        const ldJSON: UntypedObject = JSON.parse(script);
-        if (ldJSON["@graph"]) {
-          if (unwrapGraph) {
-            for (const node of ldJSON["@graph"]) {
-              if (retain) {
-                if (retain(node)) result.push(node);
-              } else {
-                result.push(node);
+        try {
+          const ldJSON: UntypedObject = JSON.parse(script);
+          if (ldJSON["@graph"]) {
+            if (unwrapGraph) {
+              for (const node of ldJSON["@graph"]) {
+                if (retain) {
+                  if (retain(node)) result.push(node);
+                } else {
+                  result.push(node);
+                }
               }
+              return;
             }
-            return;
           }
-        }
-        if (retain) {
-          if (retain(ldJSON)) result.push(ldJSON);
-        } else {
-          result.push(ldJSON);
+          if (retain) {
+            if (retain(ldJSON)) result.push(ldJSON);
+          } else {
+            result.push(ldJSON);
+          }
+        } catch (err) {
+          if (eh) eh(ctx, index, scriptElem, err);
         }
       }
     });
@@ -282,8 +290,8 @@ export class EnrichQueryableHtmlContent implements ContentTransformer {
       images: (retain?: ImageFilter): HtmlImage[] => {
         return self.images(document, retain);
       },
-      uptypedSchemas: (unwrapGraph: boolean, retain?: UntypedObjectFilter): UntypedObject[] | undefined => {
-        return self.untypedSchemas(document, unwrapGraph, retain);
+      uptypedSchemas: (unwrapGraph: boolean, retain?: UntypedObjectFilter, eh?: SchemaParseErrorHandler): UntypedObject[] | undefined => {
+        return self.untypedSchemas(ctx, document, unwrapGraph, retain, eh);
       },
       pageIcons: (): PageIcon[] => {
         return self.pageIcons(document);

@@ -1,5 +1,5 @@
 import * as p from "@shah/ts-pipe";
-import { Expect, Test, TestFixture, Timeout } from "alsatian";
+import { Expect, Test, TestFixture, Timeout, TestCase } from "alsatian";
 import * as fs from "fs";
 import { NewsArticle, WebPage } from "schema-dts";
 import mime from "whatwg-mimetype";
@@ -11,6 +11,8 @@ export class TestSuite {
     static test1HtmlFile = "queryable-content-spec-1.html.golden";
     static test2Url = "https://www.impactbnd.com/blog/best-seo-news-sites"
     static test2HtmlFile = "queryable-content-spec-2.html.golden";
+    static test3Url = "https://medicaleventsguide.com/manhattan-primary-care-midtown-manhattan"
+    static test3HtmlFile = "queryable-content-spec-3.html.golden";
 
     static readonly standardContentPipe = p.pipe(
         qc.EnrichQueryableHtmlContent.singleton,
@@ -30,8 +32,9 @@ export class TestSuite {
     }
 
     @Test("Test HTML JSON+LD")
-    async testJsonLdSchema(): Promise<void> {
-        const content = await this.content(TestSuite.test1HtmlFile, TestSuite.standardContentPipe);
+    @TestCase(TestSuite.test1HtmlFile)
+    async testJsonLdSchema(testFileName: string): Promise<void> {
+        const content = await this.content(testFileName, TestSuite.standardContentPipe);
         Expect(content).toBeDefined();
         Expect(qc.isQueryableHtmlContent(content)).toBe(true);
         if (qc.isQueryableHtmlContent(content)) {
@@ -45,6 +48,21 @@ export class TestSuite {
                 Expect(schemas[1]["@type"]).toBe("WebPage");
                 const org = schemas[1] as WebPage;
             }
+        }
+    }
+
+    @Test("Test broken HTML JSON+LD")
+    @TestCase(TestSuite.test3HtmlFile)
+    async testBrokenJsonLdSchema(testFileName: string): Promise<void> {
+        const content = await this.content(testFileName, TestSuite.standardContentPipe);
+        Expect(content).toBeDefined();
+        Expect(qc.isQueryableHtmlContent(content)).toBe(true);
+        if (qc.isQueryableHtmlContent(content)) {
+            let errorIndex: number = -1;
+            const schemas = content.uptypedSchemas(true, undefined, (ctx, index, elem, err) => { errorIndex = index });
+            Expect(schemas).toBeDefined();
+            Expect(schemas?.length).toBe(6);
+            Expect(errorIndex).toBe(1);
         }
     }
 
