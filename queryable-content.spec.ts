@@ -1,7 +1,6 @@
 import * as p from "@shah/ts-pipe";
-import { Expect, Test, TestFixture, Timeout, TestCase } from "alsatian";
+import { Expect, Test, TestCase, TestFixture, Timeout } from "alsatian";
 import * as fs from "fs";
-import { NewsArticle, WebPage } from "schema-dts";
 import mime from "whatwg-mimetype";
 import * as qc from "./queryable-content";
 
@@ -44,9 +43,9 @@ export class TestSuite {
             if (schemas && schemas[0]) {
                 // create a type-safe version of article
                 Expect(schemas[0]["@type"]).toBe("NewsArticle");
-                const article = schemas[0] as NewsArticle;
+                // now, can be used as: const article = schemas[0] as NewsArticle;
                 Expect(schemas[1]["@type"]).toBe("WebPage");
-                const org = schemas[1] as WebPage;
+                // now, can be used as: const org = schemas[1] as WebPage;
             }
         }
     }
@@ -59,7 +58,7 @@ export class TestSuite {
         Expect(qc.isQueryableHtmlContent(content)).toBe(true);
         if (qc.isQueryableHtmlContent(content)) {
             let errorIndex: number = -1;
-            const schemas = content.untypedSchemas(true, undefined, (ctx, index, elem, err) => { errorIndex = index });
+            const schemas = content.untypedSchemas(true, undefined, (_ctx, index) => { errorIndex = index });
             Expect(schemas).toBeDefined();
             Expect(schemas?.length).toBe(6);
             Expect(errorIndex).toBe(1);

@@ -152,7 +152,7 @@ export class ConsumeHtmlMeta implements HtmlMetaConsumer {
   static readonly nameAndPropertyOnly = new ConsumeHtmlMeta();
 
   async flow(ctx: HtmlMetaConsumerContext, meta: HtmlMeta): Promise<HtmlMeta> {
-    ctx.document("meta").each((index, metaElem): void => {
+    ctx.document("meta").each((_, metaElem): void => {
       const name = metaElem.attribs["name"];
       const property = metaElem.attribs["property"];
       if (name || property) {
@@ -175,7 +175,7 @@ export class EnrichQueryableHtmlContent implements ContentTransformer {
 
   anchors(document: CheerioStatic, retain?: AnchorFilter): HtmlAnchor[] {
     const result: HtmlAnchor[] = []
-    document("a").each((index, anchorTag): void => {
+    document("a").each((_, anchorTag): void => {
       const href = anchorTag.attribs["href"];
       if (href) {
         const anchor: HtmlAnchor = {
@@ -194,7 +194,7 @@ export class EnrichQueryableHtmlContent implements ContentTransformer {
 
   images(document: CheerioStatic, retain?: ImageFilter): HtmlImage[] {
     const result: HtmlImage[] = []
-    document("img").each((index, imgElem): void => {
+    document("img").each((_, imgElem): void => {
       const image: HtmlImage = {
         src: imgElem.attribs["src"],
         alt: imgElem.attribs["alt"],
@@ -246,7 +246,7 @@ export class EnrichQueryableHtmlContent implements ContentTransformer {
   pageIcons(document: CheerioStatic): PageIcon[] {
     const result: PageIcon[] = [];
     pageIconSelectors.forEach((selector) => {
-      document(selector[1]).each((i, linkElem) => {
+      document(selector[1]).each((_, linkElem) => {
         const { href, sizes, type } = linkElem.attribs;
         if (href && href !== '#') {
           const icon = {
@@ -306,7 +306,7 @@ export class EnrichQueryableHtmlContent implements ContentTransformer {
 export class BuildCuratableContent implements ContentTransformer {
   static readonly singleton = new BuildCuratableContent();
 
-  parseOpenGraph(ctx: GovernedContentContext, document: CheerioStatic): OpenGraph {
+  parseOpenGraph(_: GovernedContentContext, document: CheerioStatic): OpenGraph {
     let result: OpenGraph = {};
     const metaTransformers: {
       [key: string]: (v: string) => void;
@@ -331,7 +331,7 @@ export class BuildCuratableContent implements ContentTransformer {
     return result;
   }
 
-  parseTwitterCard(ctx: GovernedContentContext, document: CheerioStatic): TwitterCard {
+  parseTwitterCard(_: GovernedContentContext, document: CheerioStatic): TwitterCard {
     let result: TwitterCard = {};
     const metaTransformers: {
       [key: string]: (v: string) => void;
@@ -402,7 +402,7 @@ export class StandardizeCurationTitle implements ContentTransformer {
   static readonly sourceNameAfterPipeRegEx = / \| .*$/;
   static readonly singleton = new StandardizeCurationTitle();
 
-  async flow(ctx: GovernedContentContext, content: GovernedContent): Promise<GovernedContent | CuratableContent | TransformedContent> {
+  async flow(_: GovernedContentContext, content: GovernedContent): Promise<GovernedContent | CuratableContent | TransformedContent> {
     if (isCuratableContent(content)) {
       const suggested = content.title;
       const standardized = suggested.replace(StandardizeCurationTitle.sourceNameAfterPipeRegEx, "");
