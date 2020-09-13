@@ -1,6 +1,6 @@
 {
     "name": "@shah/queryable-content",
-    "version": "0.5.3",
+    "version": "0.5.4",
     "description": "Queryable (usually HTML) content for content orchestration engines",
     "main": "dist/queryable-content.js",
     "types": "dist/queryable-content.d.ts",
@@ -38,7 +38,7 @@
     "homepage": "https://github.com/shah/queryable-content",
     "devDependencies": {
         "@types/cheerio": "^0.22.21",
-        "@types/node": "^14.0.26",
+        "@types/node": "^14.10.1",
         "@types/whatwg-mimetype": "^2.1.0",
         "alsatian": "^3.2.1",
         "ts-node": "^8.10.2",
